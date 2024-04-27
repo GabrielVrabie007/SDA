@@ -1,5 +1,13 @@
 #include <stdio.h>
 
+#include "func.h"
+
+int main() {
+switch_options();
+    return 0;
+}
+=======
+
 #include "function.h"
 
     int main() {
@@ -190,4 +198,5 @@ int main() {
 
     return 0;
 }
+
 
