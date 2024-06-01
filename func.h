@@ -1,182 +1,176 @@
-#ifndef SEARCHING_BINARY_TREE
-#define SEARCHING_BINARY_TREE
+#define Algorithms_ANALISIS
+#ifdef Algorithms_ANALISIS
 
-typedef struct Binary_Search_Tree{
-    int key;
-    char *name;
-    int wealth;
-    char *country;
-    struct Binary_Search_Tree *left;
-    struct Binary_Search_Tree *right;
-}Binary_Search_Tree;
+/**
+ * Initialize with random number generator
+ * @param nr_of_elements
+ * @param array
+ */
+void initialize_array(int *nr_of_elements, int *array);
 
-typedef struct Queue_Node {
-    Binary_Search_Tree *data;
-    struct Queue_Node *next;
-} Queue_Node;
-typedef struct Queue{
-    Queue_Node *front;
-    Queue_Node *back;
-} Queue;
 /**
- * Allocate memory for name in struct Binary_Search_Tree
- * @return
+ * Print the random number array
+ * @param nr_of_elements
+ * @param array
  */
-char *memory_for_name();
+void print_array(int nr_of_elements, int *array);
+
 /**
- * Allocate memory for country in struct Binary_Search_Tree
- * @return
+ * Give choice to print the random number array
+ * @param array
+ * @param nr_of_elements
  */
-char *memory_for_country();
+void choice_to_print_array(int *array,int *nr_of_elements);
+
 /**
- * Create a new node using struct Binary_Search_Tree
- * @param key
- * @param name
- * @param wealth
- * @param country
- * @return new node
- */
-Binary_Search_Tree *create_node(int key, char *name, int wealth, char *country);
-/**
- * Insert new node in binary tree
- * @param root
- * @param key
- * @param name
- * @param wealth
- * @param country
- * @return new element
- */
-Binary_Search_Tree *insert(Binary_Search_Tree *root, int key, char *name, int wealth, char *country);
-/**
- * Read data of binary tree from input stream
- * @return
- */
-Binary_Search_Tree * read_tree();
-/**
- * Called in function print_tree() to print entire binary tree
- * @param root
- */
-void _print_tree(Binary_Search_Tree * root);
-/**
- * Print entire binary tree with all elements
- * @param root
- */
-void print_tree(Binary_Search_Tree *root);
-/**
- * Search a node in binary tree
- * @param root
- * @param target- searched key in binary tree
- * return all information about the node
- */
-int search_key_recursive(Binary_Search_Tree *root,int target);
-/**
- * Inorder traversal of binary tree
- * @param root
- */
-void inorder_traversal(Binary_Search_Tree *root);
-/**
- * Preoorder traversal of binary tree
- * @param root
- */
-void preorder_traversal(Binary_Search_Tree *root);
-/**
- * Postorder traversal of binary tree
- * @param root
- */
-void postorder_traversal(Binary_Search_Tree *root);
-/**
- * Create new node and put it in queue
- * @param data
- * @return queue_node
- */
-Queue_Node *create_queue_node(Binary_Search_Tree *data);
-/**
- * Create empty queue
- * @param queue
- * @param data
- * return pointer to queue
- */
-Queue *create_queue();
-/**
- * Put node in queue
- * @param queue
- * @param data
- */
-void put_in_queue(Queue *queue, Binary_Search_Tree *data);
-/**
- * Get node from queue
- * @param queue
- * @return data from queue
- */
-Binary_Search_Tree *get_from_queue(Queue *queue);
-/**
- * Breadth-first search for all nodes in Binary_Search_Tree
- * @param root
- */
-void BFS(Binary_Search_Tree *root);
-/**
- * Depth-first search for all nodes in Binary_Search_Tree
- * @param node
- */
-void DFS(Binary_Search_Tree *node);
-/**
- * Switch between options
- */
-void switch_options();
-/**
- * Calculate maximum number between two numbers
+ * Swap two values
  * @param a
  * @param b
- * @return maximum number between two numbers
  */
-int max(int a, int b);
+void swap(int *a, int *b);
 /**
- * Calculate height of binary tree
- * @param node
- * @return height of binary tree
+ * Implement algorithm Selection Sort
+ * @param array
+ * @param nr_of_elements
  */
-int height(Binary_Search_Tree* node);
+void selection_sort(int *array, int *nr_of_elements);
 /**
- * Check if binary tree is balanced
- * @param root
- * @return 1 if binary tree is balanced, 0 if not
+ * Measure time execution of Selection Sort
+ * @param array
+ * @param nr_of_elements
  */
-int is_balanced(Binary_Search_Tree* root);
+void time_execution_selection_sort(int *array, int *nr_of_elements);
 /**
- * Rotate binary tree right
- * @param y
- * @return rotated binary tree
+ * Main function where is analyzing selection sort
+ * @param array
+ * @param nr_of_elements
  */
-Binary_Search_Tree* rotate_right(Binary_Search_Tree* parent);
+void analyze_selection_sort_execution(int *array, int *nr_of_elements);
+
 /**
- * Rotate binary tree left
- * @param x
- * @return rotated binary tree
+ * Devide array using method of pivot and swap elements
+ * @param arr
+ * @param start
+ * @param last
+ * @return
  */
-Binary_Search_Tree *rotate_left(Binary_Search_Tree* parent);
+int partition(int *arr, int start, int last);
+
 /**
- * Balance binary tree
- * @param root
- * @return balanced binary tree
+ * Implement Quick Sort Algorithm
+ * @param arr
+ * @param start
+ * @param last
  */
-Binary_Search_Tree* balance_AVL(Binary_Search_Tree* root);
+void quick_sort(int *arr, int start, int last);
 /**
- * Calculate balance factor of binary tree
- * @param node
- * @return balance factor of binary tree
+ * Measure time execution in seconds of the algorithm quick sort
+ * @param array
+ * @param nr_of_elements
  */
-void print_spaces(int n);
+void time_execution_quick_sort(int *array, int *nr_of_elements);
 /**
- * Print balanced binary tree
- * @param root
- * @param level
+ * Main function where is analyzing quick sort
+ * @param array
+ * @param nr_of_elements
  */
-void print_balanced_tree(Binary_Search_Tree *root, int level);
+void analyze_quick_sort_execution(int *array,int *nr_of_elements);
 /**
- * Mirror binary tree
- * @param root
+ * Implement algorithm Liniar Search
+ * @param array
+ * @param nr_of_elements
+ * @param target
  */
-void mirror_tree(Binary_Search_Tree *root);
+void liniar_search(int *array,int *nr_of_elements,int target);
+/**
+ * Measure time execution of algorithm Liniar Search
+ * @param array
+ * @param nr_of_elements
+ * @param target
+ */
+void time_execution_liniar_search(int *array,int *nr_of_elements,int target);
+/**
+ * Main function that analyze performance linear search
+ * @param array
+ * @param nr_of_elements
+ */
+void analyze_liniar_search_execution(int *array, int *nr_of_elements);
+/**
+ * Implementation of algorithm Binary Search
+ * @param array
+ * @param nr_of_elements
+ * @param left
+ * @param right
+ * @param target
+ * @return
+ */
+/**
+ * Binary search algorithm.
+ *
+ * @param array Pointer to the sorted array.
+ * @param nr_of_elements Pointer to the number of elements in the array.
+ * @param left Index of the left boundary of the search interval.
+ * @param right Index of the right boundary of the search interval.
+ * @param target The value to search for.
+ * @return Index of the target element if found, -1 otherwise.
+ */
+int binary_search(int *array, int *nr_of_elements, int left, int right, int target);
+
+/**
+ * Measure the execution time of the binary search algorithm.
+ *
+ * @param array Pointer to the sorted array.
+ * @param nr_of_elements Pointer to the number of elements in the array.
+ * @param target The value to search for.
+ */
+void time_execution_binary_search(int *array, int *nr_of_elements, int target);
+
+/**
+ * Analyze the performance of the binary search algorithm.
+ *
+ * @param array Pointer to the sorted array.
+ * @param nr_of_elements Pointer to the number of elements in the array.
+ */
+void analyze_binary_search_execution(int *array, int *nr_of_elements);
+
+/**
+ * Add two arrays element-wise.
+ *
+ * @param a First array.
+ * @param b Second array.
+ * @param result Array to store the result.
+ * @param length Length of the arrays.
+ */
+void add_array(int *a, int *b, int *result, int length);
+
+/**
+ * Print the elements of an array representing a large Fibonacci number.
+ *
+ * @param result Array representing the Fibonacci number.
+ * @param length Length of the array.
+ */
+void print_fibonacci(int result[], int length);
+
+/**
+ * Calculate the nth Fibonacci number.
+ *
+ * @param n The index of the Fibonacci number to calculate.
+ */
+void calculate_fibonacci(int n);
+
+/**
+ * Measure the execution time of calculating the nth Fibonacci number.
+ *
+ * @param n The index of the Fibonacci number to calculate.
+ */
+void time_execution_fibbo_number(int n);
+
+/**
+ * Main function to switch between options.
+ */
+void switch_options();
 
 
-#endif SEARCHING_BINARY_TREE
+#endif
+
+
