@@ -1,389 +1,313 @@
 #include <stdio.h>
-#include "func.h"
 #include <stdlib.h>
-#include <string.h>
+#include <time.h>
+#include <unistd.h>
+#include "func.h"
 
-char *memory_for_name(){
-    char*name;
-    char static_name[50];
-    printf("Enter name: ");
-    scanf("%s",static_name);
-    name=strdup(static_name);
-    return name;
-}
 
-char *memory_for_country(){
-    char *country;
-    char static_country[50];
-    printf("Enter country: ");
-    scanf("%s",static_country);
-    country=strdup(static_country);
-    return country;
-}
 
-Binary_Search_Tree *create_node(int key,char *name,int wealth,char *country){
-    Binary_Search_Tree *node = (Binary_Search_Tree *)malloc(sizeof(Binary_Search_Tree));
-    if (node == NULL){
-        printf("Memory allocation error\n");
-        exit(1);
+void initialize_array(int *nr_of_elements, int *array) {
+    srand(time(NULL) * getpid());
+    for (int i = 0; i < *nr_of_elements; i++) {
+        array[i] = (rand() % (*nr_of_elements)) + 1;
     }
-    node->key = key;
-    node->name=strdup(name);
-    node->country=strdup(country);
-    node->wealth = wealth;
-    node->left = NULL;
-    node->right = NULL;
-    return node;
 }
 
-Binary_Search_Tree * insert(Binary_Search_Tree * root, int key, char *name, int wealth, char *country) {
-    if (root == NULL)
-        return create_node(key, name, wealth, country);
-
-    if (key < root->key)
-        root->left = insert(root->left, key, name, wealth, country);
-    else if (key > root->key)
-        root->right = insert(root->right, key, name, wealth, country);
-
-    return root;
+void print_array(int nr_of_elements, int *array) {
+    for (int i = 0; i < nr_of_elements; i++) {
+        printf("%d ", array[i]);
+    }
+    printf("\n");
 }
-Binary_Search_Tree * read_tree() {
-    Binary_Search_Tree * root = NULL;
-    int key;
 
-    while (1) {
-        printf("\nEnter key (to STOP, enter -1): ");
-        scanf_s("%d", &key);
+void choice_to_print_array(int *array,int *nr_of_elements){
+    int choice;
+    printf("\nDo you want to print the array  0/1 ?\n");
+    scanf_s("%d", &choice);
+    if (choice == 1) {
+        print_array(*nr_of_elements, array);
+    }
 
-        if (key == -1) {
+}
+
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+
+
+void selection_sort(int *array, int *nr_of_elements) {
+    int i, j, min_index;
+    for (i = 0; i < *nr_of_elements - 1; i++) {
+        min_index = i;
+        for (j = i + 1; j < *nr_of_elements; j++) {
+            if (array[j] < array[min_index]) {
+                min_index = j;
+            }
+        }
+        swap(&array[i], &array[min_index]);
+    }
+}
+
+void time_execution_selection_sort(int *array, int *nr_of_elements) {
+    clock_t start = clock();
+
+    selection_sort(array, nr_of_elements);
+
+    clock_t end = clock();
+
+    double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+    printf("\nCPU time used for Selection Sort: %f seconds\n", cpu_time_used);
+}
+
+void analyze_selection_sort_execution(int *array, int *nr_of_elements) {
+    selection_sort(array, nr_of_elements);
+    choice_to_print_array(array, nr_of_elements);
+    time_execution_selection_sort(array, nr_of_elements);
+}
+
+int partition(int *arr, int start, int last) {
+
+    int *pivot = &arr[start];
+    int i = start;
+    int j = last;
+
+    while (i < j) {
+
+        while (arr[i] <= *pivot && i <= last - 1) {
+            i++;
+        }
+        while (arr[j] > *pivot && j >= start + 1) {
+            j--;
+        }
+        if (i < j) {
+            swap(&arr[i], &arr[j]);
+        }
+    }
+    swap(&arr[start], &arr[j]);
+    return j;
+}
+
+void quick_sort(int *arr, int start, int last) {
+    if (start < last) {
+
+        int partitionIndex = partition(arr, start, last);
+
+        quick_sort(arr, start, partitionIndex - 1);
+        quick_sort(arr, partitionIndex + 1, last);
+    }
+}
+
+
+void time_execution_quick_sort(int *array, int *nr_of_elements) {
+    clock_t start = clock();
+
+    quick_sort(array, 0, *nr_of_elements - 1);
+
+    clock_t end = clock();
+
+    double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+    printf("\nCPU time used: %f seconds\n", cpu_time_used);
+}
+
+void analyze_quick_sort_execution(int *array,int *nr_of_elements) {
+    quick_sort(array, 0, *nr_of_elements - 1);
+    choice_to_print_array(array, nr_of_elements);
+    time_execution_quick_sort(array, nr_of_elements);
+
+}
+
+void liniar_search(int *array,int *nr_of_elements,int target){
+
+    int found=0;
+    for (int i = 0; i < *nr_of_elements; ++i) {
+        if (array[i] == target) {
+            printf("\nThe element %d was found at position %d\n", target, ++i);
+            found=1;
             break;
         }
-        char *name = memory_for_name();
-        char *country = memory_for_country();
-        int wealth;
-
-        printf("Enter wealth: ");
-        scanf_s("%d", &wealth);
-
-        root = insert(root, key, name, wealth, country);
+    }
+    if (!found) {
+        printf("\nThe element %d was not found\n", target);
     }
 
-    return root;
 }
 
+void time_execution_liniar_search(int *array,int *nr_of_elements,int target){
+    clock_t start = clock();
 
-void _print_tree(Binary_Search_Tree * root) {
-    if (root == NULL)
-        return;
-    _print_tree(root->left);
-    printf("Key: %d\nName: %s\nWealth: %d\nCountry: %s\n", root->key, root->name, root->wealth, root->country);
-    _print_tree(root->right);
+    liniar_search(array,nr_of_elements,target);
 
+    clock_t end = clock();
+
+    double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+    printf("\nCPU time used: %f seconds\n", cpu_time_used);
 }
 
-void print_tree(Binary_Search_Tree *root) {
-    _print_tree(root);
-}
+void analyze_liniar_search_execution(int *array, int *nr_of_elements){
+    int target;
+    printf("\nPlease enter the target: ");
+    scanf_s("%d", &target);
+    choice_to_print_array(array, nr_of_elements);
+    time_execution_liniar_search(array, nr_of_elements, target);
 
-int search_key_recursive(Binary_Search_Tree *root,int target){
-    if(root==NULL){
-        printf("Arborele este vid!");
+}
+int binary_search(int *array,int *nr_of_elements,int left,int right,int target){
+    if (left <= right) {
+        int mid = (left + right) / 2;
+        if (array[mid] == target) {
+            return mid;
+        } else if (array[mid] > target) {
+            return binary_search(array, nr_of_elements, left, mid - 1,target);
+        } else {
+            return binary_search(array, nr_of_elements, mid + 1, right,target);
+        }
     }
-    if(root->key==target){
-        printf("Valorea este prezenta in arbore\n");
-        printf("Key: %d\n Name: %s\n Wealth: %d\n Country: %s\n", root->key, root->name, root->wealth, root->country);
-        return 1;
+    return -1;
+}
+
+void time_execution_binary_search(int *array,int *nr_of_elements,int target){
+    clock_t start = clock();
+
+    binary_search(array, nr_of_elements, 0, *nr_of_elements - 1,target);
+
+    clock_t end = clock();
+
+    double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+    printf("\nCPU time used: %f seconds\n", cpu_time_used);
+}
+
+void analyze_binary_search_execution(int *array, int *nr_of_elements){
+    int target;
+    printf("\nPlease enter the target: ");
+    scanf("%d", &target);
+    choice_to_print_array(array, nr_of_elements);
+    //binary_search(array, nr_of_elements, 0, *nr_of_elements - 1,target);
+    time_execution_binary_search(array, nr_of_elements, target);
+}
+
+void add_array(int *a, int *b, int *result, int length) {
+    int carry = 0;
+    for (int i = length - 1; i >= 0; i--) {
+        int sum = a[i] + b[i] + carry;
+        result[i] = sum % 10;
+        carry = sum / 10;
     }
-    else if(root->key>target){
-        return search_key_recursive(root->left,target);
-    }else{
-        return search_key_recursive(root->right,target);
+}
+
+void print_fibonacci(int result[], int length) {
+    int i = 0;
+
+    while (i < length && result[i] == 0) {
+        i++;
     }
-}
-
-void inorder_traversal(Binary_Search_Tree *root) {
-    if (root == NULL)
-        return;
-
-    inorder_traversal(root->left);
-    printf("Key: %d\n", root->key);
-    inorder_traversal(root->right);
-}
-
-void preorder_traversal(Binary_Search_Tree *root) {
-    if (root == NULL)
-        return;
-
-    printf("Key: %d\n", root->key);
-    preorder_traversal(root->left);
-    preorder_traversal(root->right);
-}
-
-
-void postorder_traversal(Binary_Search_Tree *root) {
-    if (root == NULL)
-        return;
-
-    postorder_traversal(root->left);
-    postorder_traversal(root->right);
-    printf("Key: %d\n", root->key);
-}
-
-Queue_Node *create_queue_node(Binary_Search_Tree *data) {
-    Queue_Node *newNode = (Queue_Node *)malloc(sizeof(Queue_Node));
-    if (newNode == NULL) {
-        fprintf(stderr, "Memory allocation failed\n");
-        exit(EXIT_FAILURE);
-    }
-    newNode->data = data;
-    newNode->next = NULL;
-    return newNode;
-}
-
-Queue *create_queue() {
-    Queue *queue = (Queue *)malloc(sizeof(Queue));
-    if (queue == NULL) {
-        fprintf(stderr, "Memory allocation failed\n");
-        exit(EXIT_FAILURE);
-    }
-    queue->front = NULL;
-    queue->back = NULL;
-    return queue;
-}
-
-int is_empty(Queue *queue) {
-    return (queue->front == NULL);
-}
-
-void put_in_queue(Queue *queue, Binary_Search_Tree *data) {
-    Queue_Node *newNode = create_queue_node(data);
-    if (is_empty(queue)) {
-        queue->front = queue->back = newNode;
+    if (i == length) {
+        printf("0");
     } else {
-        queue->back->next = newNode;
-        queue->back = newNode;
-    }
-}
-
-// Function to dequeue a node from the queue
-Binary_Search_Tree *get_from_queue(Queue *queue) {
-    if (is_empty(queue)) {
-        fprintf(stderr, "Queue is empty\n");
-        exit(EXIT_FAILURE);
-    }
-    Queue_Node *temp = queue->front;
-    Binary_Search_Tree *data = temp->data;
-    queue->front = queue->front->next;
-    free(temp);
-    return data;
-}
-
-void BFS(Binary_Search_Tree *root) {
-    if (root == NULL)
-        return;
-
-    Queue *queue = create_queue();
-    put_in_queue(queue, root);
-
-    while (!is_empty(queue)) {
-        Binary_Search_Tree *current = get_from_queue(queue);
-        printf("Key: %d, Name: %s, Wealth: %d, Country: %s\n", current->key, current->name, current->wealth,
-               current->country);
-        if (current->left != NULL)
-            put_in_queue(queue, current->left);
-        if (current->right != NULL)
-            put_in_queue(queue, current->right);
-    }
-}
-
-void DFS(Binary_Search_Tree *node){
-    preorder_traversal(node);
-}
-
-int max(int a, int b) {
-    return (a > b) ? a : b;
-}
-
-int height(Binary_Search_Tree* node) {
-    if (node == NULL)
-        return 0;
-    return 1 + max(height(node->left), height(node->right));
-}
-
-int is_balanced(Binary_Search_Tree* root) {
-    if (root == NULL)
-        return 1;
-    int left_height = height(root->left);
-    int right_height = height(root->right);
-    if (abs(left_height - right_height) <= 1 && is_balanced(root->left) && is_balanced(root->right))
-        return 1;
-    return 0;
-}
-
-
-Binary_Search_Tree* rotate_right(Binary_Search_Tree* parent) {
-    Binary_Search_Tree* pivot = parent->left;
-    Binary_Search_Tree* right_subtree = pivot->right;
-
-    pivot->right = parent;
-    parent->left = right_subtree;
-
-    return pivot;
-}
-
-Binary_Search_Tree* rotate_left(Binary_Search_Tree* parent) {
-    Binary_Search_Tree* pivot = parent->right;
-    Binary_Search_Tree* left_subtree = pivot->left;
-
-    pivot->left = parent;
-    parent->right = left_subtree;
-
-    return pivot;
-}
-
-
-Binary_Search_Tree* balance_AVL(Binary_Search_Tree* root) {
-    if (root == NULL)
-        return root;
-
-    int balance = height(root->left) - height(root->right);
-
-    if (balance > 1) {
-        if (height(root->left->left) >= height(root->left->right))
-            return rotate_right(root);
-        else {
-            root->left = rotate_left(root->left);
-            return rotate_right(root);
+        for (; i < length; i++) {
+            printf("%d", result[i]);
         }
     }
-    if (balance < -1) {
-        if (height(root->right->right) >= height(root->right->left))
-            return rotate_left(root);
-        else {
-            root->right = rotate_right(root->right);
-            return rotate_left(root);
-        }
+    printf("\n");
+}
+
+void calculate_fibonacci(int n) {
+    int maxLength = 200000;
+
+    int *fib1 = calloc(maxLength, sizeof(int));
+    int *fib2 = calloc(maxLength, sizeof(int));
+    int *result = calloc(maxLength, sizeof(int));
+
+    fib1[maxLength - 1] = 1;
+    fib2[maxLength - 1] = 1;
+
+    for (int i = 3; i <= n; i++) {
+        add_array(fib1, fib2, result, maxLength);
+
+        int *temp = fib2;
+        fib2 = fib1;
+        fib1 = result;
+        result = temp;
     }
-    return root;
+
+    print_fibonacci(fib1, maxLength);
+
+    free(fib1);
+    free(fib2);
+    free(result);
+}
+
+void time_execution_fibbo_number(int n) {
+    clock_t start = clock();
+
+    calculate_fibonacci(n);
+
+    clock_t end = clock();
+
+    double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+    printf("\nCPU time used: %f seconds\n", cpu_time_used);
 }
 
 
-void print_spaces(int n) {
-    for (int i = 0; i < n; i++) {
-        printf(" ");
-    }
-}
-
-// Function to print binary tree
-void print_balanced_tree(Binary_Search_Tree *root, int level) {
-    if (root == NULL) {
-        return;
-    }
-    int space = 4;
-    print_balanced_tree(root->right, level + 1);
-
-    print_spaces(space * level);
-
-    printf("%d\n", root->key);
-
-    print_balanced_tree(root->left, level + 1);
-}
-
-void mirror_tree(Binary_Search_Tree *root){
-    if(root==NULL) {
-        return;
-    }
-    Binary_Search_Tree *temp=root;
-
-    mirror_tree(root->left);
-    mirror_tree(root->right);
-
-    temp=root->left;
-    root->left=root->right;
-    root->right=temp;
-
-
-}
-void switch_options(){
-    Binary_Search_Tree *root=NULL;
-
+void switch_options() {
+    int nr_of_elements;
+    printf("Please enter the number of elements: ");
+    scanf_s("%d", &nr_of_elements);
+    int *array = (int *) malloc(sizeof(int) * nr_of_elements);
+    initialize_array(&nr_of_elements, array);
     int choice;
-    do {
-        printf("\n\n1.Read data from input\n");
-        printf("2.Display binary tree\n");
-        printf("3.Find node using key \n");
-        printf("4.Inorder traversal\n");
-        printf("5.Preorder traversal\n");
-        printf("6.Postorder traversal\n");
-        printf("7.BFS\n");
-        printf("8.DFS\n");
-        printf("9.Print balanced tree:\n");
-        printf("10.Mirror tree\n");
-        printf("Introduce your option:");
+
+    while (1) {
+        printf("1. Selection sort\n");
+        printf("2. Quick sort\n");
+        printf("3. Liniar search\n");
+        printf("4. Binary search\n");
+        printf("5. Fibonacci\n");
+        printf("Select option (0 to exit): ");
         scanf_s("%d", &choice);
 
+        if (choice == 0) {
+            free(array);
+            printf("Exiting...\n");
+            break;
+        }
+
         switch (choice) {
-
-
             case 1: {
-                printf("Introduce values of tree:\n");
-                root=read_tree();
+                analyze_selection_sort_execution(array,&nr_of_elements);
                 break;
             }
             case 2: {
-                print_tree(root);
+                analyze_quick_sort_execution(array,&nr_of_elements);
                 break;
             }
-            case 3:{
-                int target;
-                printf("Introduce key of searched element: ");
-                scanf_s("%d", &target);
-                search_key_recursive(root,target);
+            case 3: {
+                analyze_liniar_search_execution(array, &nr_of_elements);
                 break;
             }
-            case 4:{
-                printf("Inorder traversal:\n");
-                inorder_traversal(root);
+            case 4: {
+                analyze_binary_search_execution(array, &nr_of_elements);
                 break;
             }
             case 5:{
-                printf("Preorder traversal:\n");
-                preorder_traversal(root);
-                break;
-            }
-            case 6:{
-                printf("Postorder traversal:\n");
-                postorder_traversal(root);
-                break;
-            }
-            case 7:{
-                printf("BFS traversal:\n");
-                BFS(root);
-                break;
-            }
-            case 8:{
-                printf("DFS traversal:\n");
-                DFS(root);
-                break;
-            }
-            case 9:{
-                root= balance_AVL(root);
-                print_balanced_tree(root,0);
+                int number;
+                printf("Enter number of searched fibbonacci element: ");
+                scanf_s("%d", &number);
+                printf("The %dth Fibonacci number is: ", number);
+                time_execution_fibbo_number(number);
                 break;
             }
 
-            case 10: {
-                mirror_tree(root);
-                print_balanced_tree(root,0);
+            default:
+                printf("Invalid option\n");
                 break;
-            }
-            default: {
-                printf("Invalid option!\n");
-                break;
-            }
-
-
-
         }
-    }while(choice!=0);
+    }
 }
